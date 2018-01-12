@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd">
+        <beans profile="dev">
+            <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+            <context:component-scan base-package="com.example.demo"/>
+
+            <!-- 使Spring关注Annotation -->
+            <context:annotation-config/>
+
+            <mvc:annotation-driven/>
+
+
+            <!-- 开启这个配置，spring才能识别@Scheduled注解-->
+            <task:scheduler id="extractScheduler" pool-size="10"/>
+            <task:executor id="extractExecutor" pool-size="5"/>
+            <task:annotation-driven scheduler="extractScheduler" executor="extractExecutor" mode="proxy"/>
+            <task:scheduled-tasks scheduler="extractScheduler">
+                <!-- test -->
+                <!--<task:scheduled ref="taskSchedulerComponent" method="test" cron="0 */1 * * * ?"/>-->
+                <!--  scheduleTask create to currentTask -->
+                <task:scheduled ref="createCurrentTask" method="execute" cron="0 0 */12 * * ?"/>
+                <!--  execute currentTask-->
+                <task:scheduled ref="executeCurrentTask" method="execute" cron="0 */1 1 * * ?"/>
+
+            </task:scheduled-tasks>
+        </beans>
+
+        <beans profile="prod">
+            <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+            <context:component-scan base-package="com.example.demo"/>
+
+            <!-- 使Spring关注Annotation -->
+            <context:annotation-config/>
+
+            <mvc:annotation-driven/>
+
+
+            <!-- 开启这个配置，spring才能识别@Scheduled注解-->
+            <task:scheduler id="extractScheduler" pool-size="10"/>
+            <task:executor id="extractExecutor" pool-size="5"/>
+            <task:annotation-driven scheduler="extractScheduler" executor="extractExecutor" mode="proxy"/>
+            <task:scheduled-tasks scheduler="extractScheduler">
+                <!-- test -->
+                <!--<task:scheduled ref="taskSchedulerComponent" method="test" cron="0 */1 * * * ?"/>-->
+                <!--  scheduleTask create to currentTask -->
+                <task:scheduled ref="createCurrentTask" method="execute" cron="0 0 */12 * * ?"/>
+                <!--  execute currentTask-->
+                <task:scheduled ref="executeCurrentTask" method="execute" cron="0 */1 * * * ?"/>
+
+            </task:scheduled-tasks>
+        </beans>
+</beans>
